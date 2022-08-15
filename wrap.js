@@ -9,22 +9,18 @@ export default (mod) => {
   var Db, trans, transSet;
   ({Db} = mod);
   ({trans, transSet} = Db.prototype);
-  Db.prototype.trans = function() {
-    var r, to;
-    to = arguments[0];
-    arguments[0] = lang_map.get(to);
-    r = trans.apply(this, arguments);
+  Db.prototype.trans = function(...args) {
+    var r;
+    args[0] = lang_map.get(args[0]);
+    r = trans.apply(this, args);
     if (r) {
       r = utf8decoder.decode(r);
     }
     return r;
   };
-  Db.prototype.transSet = function() {
-    var to;
-    to = arguments[0];
-    arguments[0] = lang_map.get(to);
-    console.log(arguments);
-    return transSet.apply(this, arguments);
+  Db.prototype.transSet = function(...args) {
+    args[0] = lang_map.get(args[0]);
+    return transSet.apply(this, args);
   };
   return mod;
 };
