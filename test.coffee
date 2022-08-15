@@ -26,6 +26,10 @@ val =   'In April 2022, Momo Zhixing announced that it had obtained hundreds of 
 db.transSet('en', key, val)
 console.log db.trans('en',key)
 
+console.log db.exist('en', 'test', '123')
+db.existAdd('en', 'test', '123')
+console.log db.exist('en', 'test', '123')
+
 ###
 console.log 1111
 
