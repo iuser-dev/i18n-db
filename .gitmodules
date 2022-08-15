@@ -1,0 +1,6 @@
+[submodule "napi-rs"]
+	path = napi-rs
+	url = git@github.com:iuser-dev/napi-rs.git
+[submodule "paste"]
+	path = paste
+	url = git@github.com:iuser-dev/paste.git
