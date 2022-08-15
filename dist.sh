@@ -16,6 +16,5 @@ git pull
 
 npm set unsafe-perm true
 npm version patch
-add
 git push
 #npm publish --access=public
