@@ -11,12 +11,13 @@ pub fn hashkey(bytes: impl AsRef<[u8]>, to: u8) -> Vec<u8> {
   r.push(to);
   let bytes = bytes.as_ref();
   let len = bytes.len() as u32;
-  if len <= 16 {
+  if len <= 20 {
     r.extend(bytes);
   } else {
     let mut hash = Hash128::default();
     hash.write(bytes.as_ref());
     r.extend(hash.finish_ext().to_le_bytes());
+    r.extend(len.to_le_bytes());
   }
   r
 }
