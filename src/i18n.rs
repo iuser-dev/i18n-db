@@ -4,8 +4,19 @@ use xxhash_rust::xxh3::xxh3_128;
 
 use crate::db::Db;
 
-pub fn hashkey(to: u8, bytes: impl AsRef<[u8]>) -> Vec<u8> {
-  let mut r = Vec::with_capacity(17);
+pub fn hash_key(bytes: impl AsRef<[u8]>) -> Vec<u8> {
+  let bytes = bytes.as_ref();
+  let len = bytes.len() as u32;
+  if len <= 20 {
+    Vec::from(bytes)
+  } else {
+    let hash = xxh3_128(&bytes);
+    [&hash.to_le_bytes()[..], &len.to_le_bytes()[..]].concat()
+  }
+}
+
+pub fn hash_lang_key(to: u8, bytes: impl AsRef<[u8]>) -> Vec<u8> {
+  let mut r = Vec::with_capacity(21);
   r.push(to);
   let bytes = bytes.as_ref();
   let len = bytes.len() as u32;
@@ -28,21 +39,44 @@ macro_rules! ok {
 #[napi]
 impl Db {
   #[napi]
+  pub fn exist_add(&self, to: u8, key: String, src: String) {
+    let db = &self.db;
+    let cf = &self.cf;
+    let key = hash_lang_key(to, &key);
+    let src = hash_key(src);
+    db.put_cf(&cf.exist, &key, &src).unwrap();
+  }
+
+  #[napi]
+  pub fn exist(&self, to: u8, key: String, src: String) -> bool {
+    let db = &self.db;
+    let cf = &self.cf;
+    let key = hash_lang_key(to, &key);
+    if let Some(pre) = db.get_cf(&cf.exist, &key).unwrap() {
+      let src = hash_key(src);
+      if src == pre {
+        return true;
+      }
+    }
+    false
+  }
+
+  #[napi]
   pub fn trans_set(&self, to: u8, src: String, txt: String) -> Result<()> {
     ok!({
       let db = &self.db;
       let cf = &self.cf;
-      let key = hashkey(to, &src);
+      let key = hash_lang_key(to, &src);
       db.put_cf(&cf.trans, &key, &txt)
     })
   }
 
   #[napi]
-  pub fn trans(&self, to: u8, src: String) -> Result<Option<Uint8Array>> {
+  pub fn trans(&self, to: u8, src: String) -> Option<Uint8Array> {
     let db = &self.db;
     let cf = &self.cf;
-    let key = hashkey(to, &src);
-    Ok(db.get_cf(&cf.trans, &key).unwrap().map(Uint8Array::new))
+    let key = hash_lang_key(to, &src);
+    db.get_cf(&cf.trans, &key).unwrap().map(Uint8Array::new)
   }
   /*
   #[napi]

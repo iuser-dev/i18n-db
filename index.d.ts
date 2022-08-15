@@ -5,6 +5,8 @@
 
 export class Db {
   constructor(path: string)
+  existAdd(to: number, key: string, src: string): void
+  exist(to: number, key: string, src: string): boolean
   transSet(to: number, src: string, txt: string): void
   trans(to: number, src: string): Uint8Array | null
 }

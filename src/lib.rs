@@ -8,7 +8,7 @@ mod tx_cf;
 
 mod i18n;
 
-column_family!(mtime, len, hash, trans);
+column_family!(mtime, len, hash, trans, exist);
 
 /*
 #[neon::main]
