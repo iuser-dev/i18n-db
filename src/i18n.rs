@@ -13,7 +13,6 @@ pub fn hashkey(to: u8, bytes: impl AsRef<[u8]>) -> Vec<u8> {
     r.extend(bytes);
   } else {
     let hash = xxh3_128(&bytes);
-    dbg!(hash);
     r.extend(hash.to_le_bytes());
     r.extend(len.to_le_bytes());
   }
