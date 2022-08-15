@@ -10,9 +10,9 @@ bun run cep -- -c .
 
 ./build.sh
 
-git add -A && git commit -m'~' || true
-
 version=$(cat package.json|jq -r '.version')
+
+git add -A && git commit -m"end $version" || true
 
 git pull
 
