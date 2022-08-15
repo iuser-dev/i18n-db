@@ -1,0 +1,18 @@
+[workspace]
+members = [
+  "./crates/backend",
+  "./crates/build",
+  "./crates/macro",
+  "./crates/napi",
+  "./crates/sys",
+  "./examples/napi",
+  "./examples/napi-compat-mode",
+  "./examples/binary",
+  "./bench",
+  "./memory-testing",
+]
+
+exclude = ["./testing"]
+
+[profile.release]
+lto = true
