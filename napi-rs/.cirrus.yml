@@ -1,0 +1,32 @@
+freebsd_instance:
+  image: freebsd-13-0-release-amd64
+
+task:
+  name: FreeBSD
+  env:
+    DEBUG: 'napi:*'
+    RUSTUP_HOME: /usr/local/rustup
+    CARGO_HOME: /usr/local/cargo
+    PATH: /usr/local/cargo/bin:$PATH
+    RUSTUP_IO_THREADS: '1'
+    CI: '1'
+  setup_script:
+    - pkg update
+    - pkg install -y -f curl node16 libnghttp2
+    - curl -qL https://www.npmjs.com/install.sh | sh
+    - npm install --location=global --ignore-scripts yarn
+    - curl https://sh.rustup.rs -sSf --output rustup.sh
+    - sh rustup.sh -y --profile minimal --default-toolchain stable
+    - |
+      echo "~~~~ rustc --version ~~~~"
+      rustc --version
+      echo "~~~~ node -v ~~~~"
+      node -v
+      echo "~~~~ yarn --version ~~~~"
+      yarn --version
+  test_script:
+    - yarn install --immutable --mode=skip-build
+    - yarn build
+    - cargo test -p napi-sys --lib -- --nocapture
+    - yarn build:test
+    - yarn test --verbose

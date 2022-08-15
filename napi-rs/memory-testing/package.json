@@ -1,0 +1,17 @@
+{
+  "name": "memory-testing",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node ../cli/scripts/index.js build --release --js false"
+  },
+  "dependencies": {
+    "colorette": "^2.0.19",
+    "dockerode": "^3.3.2",
+    "pretty-bytes": "^6.0.0",
+    "table": "^6.8.0"
+  },
+  "devDependencies": {
+    "@types/dockerode": "^3.3.9"
+  }
+}
