@@ -1,8 +1,6 @@
-use std::hash::Hasher;
-
 use napi::bindgen_prelude::{Result, Uint8Array};
 use napi_derive::napi;
-use twox_hash::xxh3::{Hash128, HasherExt};
+use xxhash_rust::xxh3::xxh3_128;
 
 use crate::db::Db;
 
@@ -14,9 +12,9 @@ pub fn hashkey(to: u8, bytes: impl AsRef<[u8]>) -> Vec<u8> {
   if len <= 20 {
     r.extend(bytes);
   } else {
-    let mut hash = Hash128::default();
-    hash.write(bytes.as_ref());
-    r.extend(hash.finish_ext().to_le_bytes());
+    let hash = xxh3_128(&bytes);
+    dbg!(hash);
+    r.extend(hash.to_le_bytes());
     r.extend(len.to_le_bytes());
   }
   r
@@ -42,6 +40,7 @@ impl Db {
 
   #[napi]
   pub fn trans(&self, to: u8, src: String) -> Result<Option<Uint8Array>> {
+    dbg!(&src);
     let db = &self.db;
     let cf = &self.cf;
     let key = hashkey(to, &src);

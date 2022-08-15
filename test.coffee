@@ -23,7 +23,7 @@ val =   'In April 2022, Momo Zhixing announced that it had obtained hundreds of 
     ' As autonomous driving technology has been commercialized and tested across the country through travel platforms, more and more capital institutions have begun to place high hopes on this emerging industry.\n' +
     '\n' +
     '\n'
-db.transSet('en', key, val)
+#db.transSet('en', key, val)
 console.log db.trans('en',key)
 
 ###
